@@ -2,7 +2,7 @@ require 'optparse'
 
 class Shifter
   attr_accessor :in_p, :out_p, :time_f
-  #
+
   #              $1     $2     $3     $4          $5     $6     $7     $8
   FULL_RE = /\A(\d\d):(\d\d):(\d\d),(\d{3}) --> (\d\d):(\d\d):(\d\d),(\d{3})/
 
@@ -33,16 +33,14 @@ class Shifter
     openfiles
     @f_in.each_line do |line|
       if line =~ FULL_RE
-        #TODO use array to avoid writing same code 2 times
-        t1 = Time::mktime(0, 1, 1, $1.to_i, $2.to_i, $3.to_i, $4.to_i * 1000)
-        t1 += @shift_time
-        t1 = t1.strftime("%H:%M:%S,%L")
-
-        t2 = Time::mktime(0, 1, 1, $5.to_i, $6.to_i, $7.to_i, $8.to_i * 1000)
-        t2 += @shift_time
-        t2 = t2.strftime("%H:%M:%S,%L")
-
-        puts t1 + " --> " + t2
+        t = []
+        t[0] = Time::mktime(0, 1, 1, $1.to_i, $2.to_i, $3.to_i, $4.to_i * 1000)
+        t[1] = Time::mktime(0, 1, 1, $5.to_i, $6.to_i, $7.to_i, $8.to_i * 1000)
+        t.map! do |time|
+          time += @shift_time
+          time = time.strftime("%H:%M:%S,%L")
+        end
+        @f_out.puts t[0] + " --> " + t[1]
       else
         @f_out.write(line)
       end
