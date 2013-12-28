@@ -2,12 +2,7 @@ require 'optparse'
 
 class Shifter
   attr_accessor :in_p, :out_p, :time_f
-  # regexp for valid sub-timing line $1 => 1st time, $2 => 2nd time
-  GL_RE = /(\d\d:\d\d:\d\d,\d{3}) --> (\d\d:\d\d:\d\d,\d{3})/
-
-  # TODO line_regexp - transofrm in commented regexp
-  # $1 hours 1st time, $2 min 1st time,...
-  # $5 .. $8 2nd time values
+  #
   #              $1     $2     $3     $4          $5     $6     $7     $8
   FULL_RE = /\A(\d\d):(\d\d):(\d\d),(\d{3}) --> (\d\d):(\d\d):(\d\d),(\d{3})/
 
@@ -18,6 +13,7 @@ class Shifter
     @in_p, @out_p, @shift_time = in_p, out_p, shift_time
   end
 
+  # assign File to  @f_in and @f_out, using stdin and stdout as default
   def openfiles
     if @in_p
       @f_in = File::open(@in_p, "r")
@@ -32,6 +28,7 @@ class Shifter
     end
   end
 
+  # read @f_in, move subtitles by @shift_time and write new file to @f_out
   def convert
     openfiles
     @f_in.each_line do |line|
@@ -44,6 +41,7 @@ class Shifter
         t2 = Time::mktime(0, 1, 1, $5.to_i, $6.to_i, $7.to_i, $8.to_i * 1000)
         t2 += @shift_time
         t2 = t2.strftime("%H:%M:%S,%L")
+
         puts t1 + " --> " + t2
       else
         @f_out.write(line)
