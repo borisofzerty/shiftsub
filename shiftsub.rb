@@ -40,7 +40,7 @@ class Shifter
           time += @shift_time
           time = time.strftime("%H:%M:%S,%L")
         end
-        @f_out.puts t[0] + " --> " + t[1]
+        @f_out.puts "#{t[0]} --> #{t[1]}"
       else
         @f_out.write(line)
       end
