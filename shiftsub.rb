@@ -13,21 +13,6 @@ class Shifter
     @in_p, @out_p, @shift_time = in_p, out_p, shift_time
   end
 
-  # assign File to  @f_in and @f_out, using stdin and stdout as default
-  def openfiles
-    if @in_p
-      @f_in = File::open(@in_p, "r")
-      if @out_p
-        @f_out = File::open(@out_p, "w")
-      else
-        @f_out = $stdout
-      end
-    else
-      @f_in  = $stdin
-      @f_out = $stdout
-    end
-  end
-
   # read @f_in, move subtitles by @shift_time and write new file to @f_out
   def convert
     openfiles
@@ -45,6 +30,25 @@ class Shifter
         @f_out.write(line)
       end
     end
+    @f_out.close
+    @f_in.close
+  end
+
+  private
+
+  # assign File to  @f_in and @f_out, using stdin and stdout as default
+  def openfiles
+    if @in_p
+      @f_in = File::open(@in_p, "r")
+      if @out_p
+        @f_out = File::open(@out_p, "w")
+      else
+        @f_out = $stdout
+      end
+    else
+      @f_in  = $stdin
+      @f_out = $stdout
+    end
   end
 end
 
@@ -60,7 +64,7 @@ unless ARGV[0] =~ /\A([+-]?[0-9.]+)(ms?|s?)\z/
 end
 time_f = $1.to_f
 time_f /= 1000 unless $2[0] == "s"
-time_f *= -1 if sign =~ /-/
+time_f *= -1 if sign == "-"
 
 s = Shifter::new(time_f,ARGV[1],ARGV[2])
 s.convert
