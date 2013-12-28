@@ -6,8 +6,8 @@ class Shifter
   #              $1     $2     $3     $4          $5     $6     $7     $8
   FULL_RE = /\A(\d\d):(\d\d):(\d\d),(\d{3}) --> (\d\d):(\d\d):(\d\d),(\d{3})/
 
-  # will parse options, and fill @time_f, @f_in and @f_out variables
-  # will print error message if wrong parameters are given
+  # parse options, and fill @time_f, @in_p and @out_p variables
+  # print error message if wrong parameters are given
   def initialize(shift_time, in_p = nil, out_p = nil)
     # TODO check args
     @in_p, @out_p, @shift_time = in_p, out_p, shift_time
